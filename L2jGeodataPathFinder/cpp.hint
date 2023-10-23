@@ -1,0 +1,2 @@
+#define L2JGEODATAPATHFINDER_API __declspec(dllexport)
+#define L2JGEODATAPATHFINDER_API __declspec(dllimport)

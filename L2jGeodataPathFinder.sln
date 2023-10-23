@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "L2jGeodataPathFinder", "L2jGeodataPathFinder\L2jGeodataPathFinder.vcxproj", "{4526FC20-600C-49F6-9B5F-A6C28A8737F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsageExample", "UsageExample\UsageExample.csproj", "{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|Any CPU.Build.0 = Debug|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|x64.ActiveCfg = Debug|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|x64.Build.0 = Debug|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|x86.ActiveCfg = Debug|Win32
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Debug|x86.Build.0 = Debug|Win32
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|Any CPU.ActiveCfg = Release|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|Any CPU.Build.0 = Release|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|x64.ActiveCfg = Release|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|x64.Build.0 = Release|x64
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|x86.ActiveCfg = Release|Win32
+		{4526FC20-600C-49F6-9B5F-A6C28A8737F2}.Release|x86.Build.0 = Release|Win32
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|x64.Build.0 = Release|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1CA0AE4-7B0C-4C40-8E68-F760D5DAD19C}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5E84599-D8E6-4542-AE0C-13D42AF0D2EB}
+	EndGlobalSection
+EndGlobal
