@@ -1,5 +1,5 @@
 # L2jGeodataPathFinder
-Path Finder in L2j Geodata files
+Path finder in L2j Geodata files using A* search algorithm.
 ## Repository structure
 #### Path Finder
 Dynamic link library exporting two methods.
