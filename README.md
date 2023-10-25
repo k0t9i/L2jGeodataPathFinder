@@ -18,6 +18,6 @@ void ReleasePath(PathNode * path);
 Console C# application with usage example.
 Finds path from (80364, 147100, -3533) (near the Giran weapons store) to (83864, 143100) (north bridge of Giran)
 
-Visualization of this example (height map and image generation done in another application):
-![output](https://github.com/k0t9i/L2jGeodataPathFinder/assets/7733997/825cdb90-adc1-4ed2-a9ea-7d841f139e9c)
+Visualization of this example, yellow - full path, red - path turning points (height map and image generation done in another application):
+![output](https://github.com/k0t9i/L2jGeodataPathFinder/assets/7733997/19a39fc5-811e-4f63-b7c6-8c98a38fcec9)
 
