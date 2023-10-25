@@ -4,9 +4,10 @@ Path finder in L2j Geodata files using A* search algorithm.
 #### Path Finder
 Dynamic link library exporting two methods.
 
-Finds path by the game coords. Fills first argument with array of path node metadata (height and minX, maxX, minY, maxY in game coords) and returns size of this array:
+Finds path by the game coords. Fills first argument with array of path node metadata (height and minX, maxX, minY, maxY in game coords) and returns size of this array.
+If onlyTurningPoints = true, then a path containing only root nodes (path turning points) will be returned:
 ```cpp
-size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight);
+size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight, const bool onlyTurningPoints = false);
 ```
 Releases memory for a previously found path:
 ```cpp
