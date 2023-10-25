@@ -50,7 +50,7 @@ public:
             m_Open.erase(current->GetCoords());
             m_Closed[current->GetCoords()] = current;
 
-            for(const auto node : GetNeighbors(current, startZ))
+            for(const auto node : GetNeighbors(current))
             {
                 if (m_Closed.find(node->GetCoords()) != m_Closed.end())
                 {
@@ -105,7 +105,7 @@ private:
 
 	}
 	
-	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node, float z) const
+	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node) const
 	{
         std::vector<std::shared_ptr<PathNodeInterface>> result;
         const auto& coords = node->GetCoords();
@@ -119,7 +119,7 @@ private:
                     continue;
                 }
 
-                result.push_back(m_PathNodeFactory.CreateNode({x, y}, z));
+                result.push_back(m_PathNodeFactory.CreateNode({x, y}, node->GetHeight()));
             }
         }
 
