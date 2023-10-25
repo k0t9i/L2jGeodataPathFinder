@@ -20,12 +20,11 @@ extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const ch
 
     PathNode* nodes = new PathNode[path.size()];
 
-    // skip first (start) node
-    for (size_t i = 1; i < path.size(); i++) {
+    for (size_t i = 0; i < path.size(); i++) {
         const auto& node = path[i];
 
         const auto& minCoords = Converter::CellCoordsToWorld(node->GetCoords());
-        nodes[i - 1] = {
+        nodes[i] = {
             minCoords,
             { minCoords.x + Constants::CELL_SIZE_IN_GAME_COORDS, minCoords.y + Constants::CELL_SIZE_IN_GAME_COORDS },
             node->GetHeight()
