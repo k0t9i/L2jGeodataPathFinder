@@ -2,8 +2,8 @@
 
 public struct Point
 {
-    public uint x;
-    public uint y;
+    public int x;
+    public int y;
 };
 
 public struct PathNode

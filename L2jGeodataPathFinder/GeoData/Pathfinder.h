@@ -110,9 +110,9 @@ private:
         std::vector<std::shared_ptr<PathNodeInterface>> result;
         const auto& coords = node->GetCoords();
 
-        for (size_t x = coords.x - 1; x <= coords.x + 1; x++)
+        for (int32_t x = coords.x - 1; x <= coords.x + 1; x++)
         {
-            for (size_t y = coords.y - 1; y <= coords.y + 1; y++)
+            for (int32_t y = coords.y - 1; y <= coords.y + 1; y++)
             {
                 if (x == coords.x && y == coords.y)
                 {

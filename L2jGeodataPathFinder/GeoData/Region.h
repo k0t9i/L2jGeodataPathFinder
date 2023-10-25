@@ -26,8 +26,8 @@ public:
 		const uint8_t blockY = (blockCount - 1) - blockX * Constants::BLOCKS_DIMENSION;
 		const auto cellX = (uint8_t)std::floor((float)size / Constants::CELLS_DIMENSION) % Constants::CELLS_DIMENSION;
 		const uint8_t cellY = (size - cellX * Constants::CELLS_DIMENSION) % Constants::CELLS_DIMENSION;
-		uint32_t x = blockX * Constants::CELLS_DIMENSION + cellX;
-		uint32_t y = blockY * Constants::CELLS_DIMENSION + cellY;
+		int32_t x = blockX * Constants::CELLS_DIMENSION + cellX;
+		int32_t y = blockY * Constants::CELLS_DIMENSION + cellY;
 		x += Constants::REGION_CELLS_DIMENSION * m_Col;
 		y += Constants::REGION_CELLS_DIMENSION * m_Row;
 
