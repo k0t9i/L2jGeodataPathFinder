@@ -7,14 +7,12 @@
 #include "GeoData/Converter.h"
 
 DataHandler handler;
-LayerDecoratorFactory factory(handler);
-Pathfinder pathfinder(factory);
-
 
 extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight, const bool onlyTurningPoints)
 {
     handler.SetDataDirectory(geoDataDir);
-    factory.SetMaxPassableHeight(maxPassableHeight);
+    LayerDecoratorFactory factory(handler, maxPassableHeight);
+    Pathfinder pathfinder(factory);
 
     auto path = pathfinder.FindPath(startX, startY, startZ, endX, endY);
     if (onlyTurningPoints) {

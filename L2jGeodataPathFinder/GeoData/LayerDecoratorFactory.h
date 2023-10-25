@@ -10,8 +10,9 @@
 class LayerDecoratorFactory : public PathNodeFactoryInterface
 {
 public:
-	LayerDecoratorFactory(DataHandler& dataHandler) :
-		m_DataHandler(dataHandler)
+	LayerDecoratorFactory(DataHandler& dataHandler, const uint16_t maxPassableHeight) :
+		m_DataHandler(dataHandler),
+		m_MaxPassableHeight(maxPassableHeight)
 	{};
 	virtual ~LayerDecoratorFactory() = default;
 
@@ -28,11 +29,6 @@ public:
 		}
 
 		return m_Decorators[coords];
-	}
-
-	void SetMaxPassableHeight(const uint16_t maxPassableHeight)
-	{
-		m_MaxPassableHeight = maxPassableHeight;
 	}
 
 private:
@@ -61,6 +57,6 @@ private:
 
 private:
 	DataHandler& m_DataHandler;
-	uint16_t m_MaxPassableHeight = 0;
+	const uint16_t m_MaxPassableHeight = 0;
 	std::map<Point, std::shared_ptr<LayerDecorator>> m_Decorators;
 };
