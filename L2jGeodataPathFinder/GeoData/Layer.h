@@ -33,6 +33,10 @@ public:
 	{
 		return m_East;
 	}
+	const bool IsCompletelyOpen() const
+	{
+		return m_North && m_South && m_West && m_East;
+	}
 	const int16_t GetHeight() const
 	{
 		return m_Height;

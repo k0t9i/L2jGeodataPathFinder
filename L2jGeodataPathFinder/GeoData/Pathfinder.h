@@ -57,7 +57,7 @@ public:
                     continue;
                 }
 
-                const auto newGScore = current->GetG() + current->GetGToNewNode(node);
+                const auto newGScore = current->GetG() + current->GetGToNewNode(node, GetNeighbors(current, NEIGHBORS_COUNT));
                 auto isNewBetter = true;
 
                 if (m_Open.find(node->GetCoords()) == m_Open.end())
@@ -84,7 +84,8 @@ public:
 private:
 	const float GetHeuristicCost(std::shared_ptr<PathNodeInterface> current, std::shared_ptr<PathNodeInterface> target) const
 	{
-        return (std::abs((float)((int32_t)target->GetCoords().x - (int32_t)current->GetCoords().x)) + std::abs((float)((int32_t)target->GetCoords().y - (int32_t)current->GetCoords().y))) * 10;
+        const auto cost = std::abs((float)((int32_t)target->GetCoords().x - (int32_t)current->GetCoords().x)) + std::abs((float)((int32_t)target->GetCoords().y - (int32_t)current->GetCoords().y));
+        return 10 * cost;
 	}
 
 	const std::shared_ptr<PathNodeInterface> GetFittestOpenNode() const
@@ -105,14 +106,14 @@ private:
 
 	}
 	
-	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node) const
+	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node, const uint8_t radius = 1) const
 	{
         std::vector<std::shared_ptr<PathNodeInterface>> result;
         const auto& coords = node->GetCoords();
 
-        for (int32_t x = coords.x - 1; x <= coords.x + 1; x++)
+        for (int32_t x = coords.x - radius; x <= coords.x + radius; x++)
         {
-            for (int32_t y = coords.y - 1; y <= coords.y + 1; y++)
+            for (int32_t y = coords.y - radius; y <= coords.y + radius; y++)
             {
                 if (x == coords.x && y == coords.y)
                 {
@@ -129,4 +130,5 @@ private:
     PathNodeFactoryInterface& m_PathNodeFactory;
 	std::map<Point, std::shared_ptr<PathNodeInterface>> m_Closed;
 	std::map<Point, std::shared_ptr<PathNodeInterface>> m_Open;
+    const static uint8_t NEIGHBORS_COUNT = 3;
 };

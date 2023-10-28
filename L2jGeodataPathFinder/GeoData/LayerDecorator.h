@@ -16,7 +16,7 @@ public:
     }
     virtual ~LayerDecorator() = default;
 
-    const float GetGToNewNode(std::shared_ptr<PathNodeInterface> other) const override
+    const float GetGToNewNode(std::shared_ptr<PathNodeInterface> other, const std::vector<std::shared_ptr<PathNodeInterface>>& neighbors) const override
     {
         const auto decorator = std::dynamic_pointer_cast<LayerDecorator>(other);
 
@@ -41,12 +41,37 @@ public:
             return IMPASSABLE_SCORE;
         }
 
-        return GetCoords().x == decorator->GetCoords().x || GetCoords().y == decorator->GetCoords().y ? COMMON_SCORE : DIAGONAL_SCORE;
+        auto cost = GetCoords().x == decorator->GetCoords().x || GetCoords().y == decorator->GetCoords().y ? COMMON_SCORE : DIAGONAL_SCORE;
+
+        return cost * GetNeighborsMultiplier(neighbors);
     }
 
     const int16_t GetHeight() const override
     {
         return m_Layer->GetHeight();
+    }
+
+private:
+    const float GetNeighborsMultiplier(const std::vector<std::shared_ptr<PathNodeInterface>>& neighbors) const
+    {
+        if (neighbors.size() == 0) {
+            return 1;
+        }
+
+        uint8_t obstaclesCount = 0;
+        for (const auto& neighbor : neighbors)
+        {
+            const auto decorator = std::dynamic_pointer_cast<LayerDecorator>(neighbor);
+            if (!decorator->m_Layer->IsCompletelyOpen()) {
+                obstaclesCount++;
+            }
+        }
+
+        if (obstaclesCount == 0) {
+            return 1;
+        }
+
+        return (float)neighbors.size() / obstaclesCount;
     }
 
 private:

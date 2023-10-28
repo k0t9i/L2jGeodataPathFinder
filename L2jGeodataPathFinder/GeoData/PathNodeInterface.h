@@ -43,7 +43,7 @@ public:
 	{
 		return m_G + m_H;
 	}
-	virtual const float GetGToNewNode(std::shared_ptr<PathNodeInterface> other) const = 0;
+	virtual const float GetGToNewNode(std::shared_ptr<PathNodeInterface> other, const std::vector<std::shared_ptr<PathNodeInterface>>& neighbors) const = 0;
 	virtual const int16_t GetHeight() const = 0;
 
 private:
