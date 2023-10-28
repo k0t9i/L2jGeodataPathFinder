@@ -18,28 +18,12 @@ public:
 
     const float GetGToNewNode(std::shared_ptr<PathNodeInterface> other, const std::vector<std::shared_ptr<PathNodeInterface>>& neighbors) const override
     {
-        const auto decorator = std::dynamic_pointer_cast<LayerDecorator>(other);
+        if (!CanMoveTo(other))
+        {
+            return IMPASSABLE_SCORE;
+        }
 
-        if (GetCoords().y > decorator->GetCoords().y && !m_Layer->IsNorthOpen())
-        {
-            return IMPASSABLE_SCORE;
-        }
-        if (GetCoords().y < decorator->GetCoords().y && !m_Layer->IsSouthOpen())
-        {
-            return IMPASSABLE_SCORE;
-        }
-        if (GetCoords().x < decorator->GetCoords().x && !m_Layer->IsEastOpen())
-        {
-            return IMPASSABLE_SCORE;
-        }
-        if (GetCoords().x > decorator->GetCoords().x && !m_Layer->IsWestOpen())
-        {
-            return IMPASSABLE_SCORE;
-        }
-        if (std::abs(GetHeight() - decorator->GetHeight()) > m_MaxPassableHeight)
-        {
-            return IMPASSABLE_SCORE;
-        }
+        const auto decorator = std::dynamic_pointer_cast<LayerDecorator>(other);
 
         auto cost = GetCoords().x == decorator->GetCoords().x || GetCoords().y == decorator->GetCoords().y ? COMMON_SCORE : DIAGONAL_SCORE;
 
@@ -49,6 +33,34 @@ public:
     const int16_t GetHeight() const override
     {
         return m_Layer->GetHeight();
+    }
+
+    const bool CanMoveTo(std::shared_ptr<PathNodeInterface> other) const override
+    {
+        const auto decorator = std::dynamic_pointer_cast<LayerDecorator>(other);
+
+        if (GetCoords().y > decorator->GetCoords().y && !m_Layer->IsNorthOpen())
+        {
+            return false;
+        }
+        if (GetCoords().y < decorator->GetCoords().y && !m_Layer->IsSouthOpen())
+        {
+            return false;
+        }
+        if (GetCoords().x < decorator->GetCoords().x && !m_Layer->IsEastOpen())
+        {
+            return false;
+        }
+        if (GetCoords().x > decorator->GetCoords().x && !m_Layer->IsWestOpen())
+        {
+            return false;
+        }
+        if (std::abs(GetHeight() - decorator->GetHeight()) > m_MaxPassableHeight)
+        {
+            return false;
+        }
+
+        return true;
     }
 
 private:
