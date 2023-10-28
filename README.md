@@ -18,5 +18,4 @@ Console C# application with usage example.
 Finds path from (80364, 147100, -3533) (near the Giran weapons store) to (83864, 143100) (north bridge of Giran)
 
 Visualization of this example, red - original A* path, yellow - smoothed path (height map and image generation done in another application):
-![output](https://github.com/k0t9i/L2jGeodataPathFinder/assets/7733997/19a39fc5-811e-4f63-b7c6-8c98a38fcec9)
-
+![gh](https://github.com/k0t9i/L2jGeodataPathFinder/assets/7733997/dcc648a7-9355-4dc6-a6e8-471e823ca370)
