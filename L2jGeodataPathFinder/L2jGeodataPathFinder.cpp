@@ -20,6 +20,15 @@ extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const ch
     return path.size();
 }
 
+extern "C" L2JGEODATAPATHFINDER_API bool HasLineOfSight(const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight)
+{
+    handler.SetDataDirectory(geoDataDir);
+    LayerDecoratorFactory factory(handler, maxPassableHeight);
+    Pathfinder pathfinder(factory);
+
+    return pathfinder.LineOfSight(startX, startY, startZ, endX, endY);
+}
+
 extern "C" L2JGEODATAPATHFINDER_API void ReleasePath(PathNode * path)
 {
     delete[] path;

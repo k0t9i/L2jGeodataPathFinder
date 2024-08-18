@@ -20,5 +20,6 @@ struct PathNode
 };
 
 extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight);
+extern "C" L2JGEODATAPATHFINDER_API bool HasLineOfSight(const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight);
 extern "C" L2JGEODATAPATHFINDER_API void ReleasePath(PathNode * path);
 PathNode* ConvertPath(const std::vector<std::shared_ptr<PathNodeInterface>> path);

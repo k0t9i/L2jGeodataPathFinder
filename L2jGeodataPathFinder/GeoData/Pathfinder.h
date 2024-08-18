@@ -88,6 +88,14 @@ public:
         return result;
     }
 
+    const bool LineOfSight(const float startX, const float startY, float startZ, const float endX, const float endY) const
+    {
+        const auto start = m_PathNodeFactory.CreateNode(startX, startY, startZ);
+        const auto target = m_PathNodeFactory.CreateNode(endX, endY, startZ);
+
+        return LineOfSight(start, target);
+    }
+
 private:
 	const float GetHeuristicCost(std::shared_ptr<PathNodeInterface> current, std::shared_ptr<PathNodeInterface> target) const
 	{

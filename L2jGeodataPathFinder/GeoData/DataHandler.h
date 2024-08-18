@@ -5,6 +5,7 @@
 #include <map>
 #include <format>
 #include <cmath>
+#include <shared_mutex>
 #include "Loader.h"
 #include "Region.h"
 #include "Point.h"
@@ -18,6 +19,7 @@ public:
 
 	const Region::Cell& GetCell(const Point& coords)
 	{
+		std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 		const auto& region = LoadRegion(Converter::CellCoordsToRegion(coords));
 
 		return region->GetCell(coords);
@@ -44,4 +46,5 @@ private:
 	std::string m_DataDirectory;
 	std::map<Point, std::shared_ptr<Region>> m_Regions;
 	Loader m_Loader;
+	std::shared_timed_mutex m_Mutex;
 };
