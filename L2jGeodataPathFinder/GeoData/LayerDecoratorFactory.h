@@ -14,7 +14,24 @@ public:
 		m_DataHandler(dataHandler),
 		m_MaxPassableHeight(maxPassableHeight)
 	{};
-	virtual ~LayerDecoratorFactory() = default;
+	virtual ~LayerDecoratorFactory()
+	{
+		m_DataHandler.UnloadRegionsExcept(m_StartRegionCoords, m_TargetRegionCoords);
+	}
+
+	const std::shared_ptr<PathNodeInterface> CreateStartNode(const float x, const float y, const float z) override
+	{
+		const auto coords = Converter::WorldCoordsToCell(x, y);
+		m_StartRegionCoords = Converter::CellCoordsToRegion(coords);
+		return CreateNode(coords, z);
+	}
+
+	const std::shared_ptr<PathNodeInterface> CreateTargetNode(const float x, const float y, const float z) override
+	{
+		const auto coords = Converter::WorldCoordsToCell(x, y);
+		m_TargetRegionCoords = Converter::CellCoordsToRegion(coords);
+		return CreateNode(coords, z);
+	}
 
 	const std::shared_ptr<PathNodeInterface> CreateNode(const float x, const float y, const float z) override
 	{
@@ -59,4 +76,6 @@ private:
 	DataHandler& m_DataHandler;
 	const uint16_t m_MaxPassableHeight = 0;
 	std::map<Point, std::shared_ptr<LayerDecorator>> m_Decorators;
+	Point m_StartRegionCoords = { 0, 0 };
+	Point m_TargetRegionCoords = { 0, 0 };
 };

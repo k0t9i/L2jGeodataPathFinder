@@ -16,8 +16,8 @@ public:
 
     const std::vector<std::shared_ptr<PathNodeInterface>> FindPath(const float startX, const float startY, float startZ, const float endX, const float endY)
     {
-        const auto start = m_PathNodeFactory.CreateNode(startX, startY, startZ);
-        const auto target = m_PathNodeFactory.CreateNode(endX, endY, startZ);
+        const auto start = m_PathNodeFactory.CreateStartNode(startX, startY, startZ);
+        const auto target = m_PathNodeFactory.CreateTargetNode(endX, endY, startZ);
 
         std::vector<std::shared_ptr<PathNodeInterface>> result;
 
@@ -57,7 +57,7 @@ public:
             m_Open.erase(current->GetCoords());
             m_Closed[current->GetCoords()] = current;
 
-            for(const auto node : GetNeighbors(current))
+            for (const auto node : GetNeighbors(current))
             {
                 if (m_Closed.find(node->GetCoords()) != m_Closed.end())
                 {
@@ -90,8 +90,8 @@ public:
 
     const bool LineOfSight(const float startX, const float startY, float startZ, const float endX, const float endY) const
     {
-        const auto start = m_PathNodeFactory.CreateNode(startX, startY, startZ);
-        const auto target = m_PathNodeFactory.CreateNode(endX, endY, startZ);
+        const auto start = m_PathNodeFactory.CreateStartNode(startX, startY, startZ);
+        const auto target = m_PathNodeFactory.CreateTargetNode(endX, endY, startZ);
 
         return LineOfSight(start, target);
     }

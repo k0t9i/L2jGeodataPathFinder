@@ -30,8 +30,23 @@ public:
 		m_DataDirectory = dataDirectory;
 	}
 
+	const void UnloadRegionsExcept(const Point& startRegionCoords, const Point& targetRegionCoords)
+	{
+		for (auto it = m_Regions.cbegin(); it != m_Regions.cend();)
+		{
+			if (it->first.x == startRegionCoords.x && it->first.y == startRegionCoords.y || it->first.x == targetRegionCoords.x && it->first.y == targetRegionCoords.y)
+			{
+				++it;
+			}
+			else
+			{
+				it = m_Regions.erase(it);
+			}
+		}
+	}
+
 private:
-	const std::shared_ptr<Region>& LoadRegion(const Point& coords)
+	const std::unique_ptr<Region>& LoadRegion(const Point& coords)
 	{
 		if (m_Regions.find(coords) == m_Regions.end()) {
 			// TODO check for existence
@@ -44,7 +59,7 @@ private:
 
 private:
 	std::string m_DataDirectory;
-	std::map<Point, std::shared_ptr<Region>> m_Regions;
+	std::map<Point, std::unique_ptr<Region>> m_Regions;
 	Loader m_Loader;
 	std::shared_timed_mutex m_Mutex;
 };
