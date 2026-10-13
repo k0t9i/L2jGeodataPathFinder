@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <stdexcept>
 #include <tuple>
 #include <cmath>
 #include "Layer.h"
@@ -19,19 +20,12 @@ public:
 
 	void AddCell(const Cell& cell)
 	{
-		const auto size = m_Cells.size();
+		if (m_Cells.empty())
+		{
+			m_Cells.reserve(Constants::REGION_CELLS_DIMENSION * Constants::REGION_CELLS_DIMENSION);
+		}
 
-		const auto blockCount = (uint16_t)std::ceil((float)(size + 1) / (Constants::CELLS_DIMENSION * Constants::CELLS_DIMENSION));
-		const auto blockX = (uint8_t)std::floor((float)(blockCount - 1) / Constants::BLOCKS_DIMENSION);
-		const uint8_t blockY = (blockCount - 1) - blockX * Constants::BLOCKS_DIMENSION;
-		const auto cellX = (uint8_t)std::floor((float)size / Constants::CELLS_DIMENSION) % Constants::CELLS_DIMENSION;
-		const uint8_t cellY = (size - cellX * Constants::CELLS_DIMENSION) % Constants::CELLS_DIMENSION;
-		int32_t x = blockX * Constants::CELLS_DIMENSION + cellX;
-		int32_t y = blockY * Constants::CELLS_DIMENSION + cellY;
-		x += Constants::REGION_CELLS_DIMENSION * m_Col;
-		y += Constants::REGION_CELLS_DIMENSION * m_Row;
-
-		m_Cells[{ x, y }] = cell;
+		m_Cells.push_back(cell);
 	}
 
 	const uint8_t GetCol() const
@@ -46,16 +40,30 @@ public:
 
 	const Cell& GetCell(Point colAndRow) const
 	{
-		return m_Cells.at(colAndRow);
+		const auto x = colAndRow.x - Constants::REGION_CELLS_DIMENSION * m_Col;
+		const auto y = colAndRow.y - Constants::REGION_CELLS_DIMENSION * m_Row;
+
+		if (x < 0 || x >= Constants::REGION_CELLS_DIMENSION || y < 0 || y >= Constants::REGION_CELLS_DIMENSION)
+		{
+			throw std::out_of_range("Cell coordinates are outside the region");
+		}
+
+		const auto blockX = x / Constants::CELLS_DIMENSION;
+		const auto blockY = y / Constants::CELLS_DIMENSION;
+		const auto cellX = x % Constants::CELLS_DIMENSION;
+		const auto cellY = y % Constants::CELLS_DIMENSION;
+		const auto index = (blockX * Constants::BLOCKS_DIMENSION + blockY) * Constants::CELLS_DIMENSION * Constants::CELLS_DIMENSION + cellX * Constants::CELLS_DIMENSION + cellY;
+
+		return m_Cells.at(index);
 	}
 
-	const std::map<Point, Cell>& GetCells() const
+	const std::vector<Cell>& GetCells() const
 	{
 		return m_Cells;
 	}
 
 private:
-	std::map<Point, Cell> m_Cells;
+	std::vector<Cell> m_Cells;
 	const uint8_t m_Col;
 	const uint8_t m_Row;
 };

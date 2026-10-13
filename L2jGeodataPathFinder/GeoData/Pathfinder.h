@@ -3,6 +3,7 @@
 #include <memory>
 #include <cmath>
 #include <map>
+#include <queue>
 #include <vector>
 #include "PathNodeFactoryInterface.h"
 #include "PathNodeInterface.h"
@@ -30,15 +31,25 @@ public:
 
         m_Closed.clear();
         m_Open.clear();
+        m_OpenQueue = {};
 
         m_Open[start->GetCoords()] = start;
 
         start->SetG(0);
         start->SetH(GetHeuristicCost(start, target));
+        m_OpenQueue.push({ start->GetF(), start });
 
-        while (m_Open.size() > 0)
+        while (!m_OpenQueue.empty() && m_Closed.size() < MAX_VISITED_NODES)
         {
-            const auto current = GetFittestOpenNode();
+            const auto entry = m_OpenQueue.top();
+            m_OpenQueue.pop();
+
+            const auto current = entry.node;
+
+            if (entry.f != current->GetF() || m_Closed.find(current->GetCoords()) != m_Closed.end())
+            {
+                continue;
+            }
 
             if (current == target)
             {
@@ -64,6 +75,11 @@ public:
                     continue;
                 }
 
+                if (!current->CanMoveTo(node))
+                {
+                    continue;
+                }
+
                 const auto newGScore = current->GetG() + current->GetGToNewNode(node, GetNeighbors(current, 3));
                 auto isNewBetter = true;
 
@@ -81,6 +97,7 @@ public:
                     node->SetParent(current);
                     node->SetG(newGScore);
                     node->SetH(GetHeuristicCost(node, target));
+                    m_OpenQueue.push({ node->GetF(), node });
                 }
             }
         }
@@ -103,24 +120,6 @@ private:
         return 10 * cost;
 	}
 
-	const std::shared_ptr<PathNodeInterface> GetFittestOpenNode() const
-	{
-		float minF = FLT_MAX;
-		std::shared_ptr<PathNodeInterface> result = m_Open.begin()->second;
-
-		for (const auto& kvp : m_Open)
-		{
-			if (kvp.second->GetF() < minF)
-			{
-				minF = kvp.second->GetF();
-				result = kvp.second;
-			}
-		}
-
-		return result;
-
-	}
-	
 	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node, const uint8_t radius = 1) const
 	{
         std::vector<std::shared_ptr<PathNodeInterface>> result;
@@ -235,8 +234,29 @@ private:
         return (val > 0) ? 1 : ((val < 0) ? -1 : 0);
     }
 private:
+    struct OpenNode
+    {
+        float f;
+        std::shared_ptr<PathNodeInterface> node;
+    };
+
+    struct OpenNodeCompare
+    {
+        bool operator()(const OpenNode& left, const OpenNode& right) const
+        {
+            if (left.f != right.f)
+            {
+                return left.f > right.f;
+            }
+
+            return right.node->GetCoords() < left.node->GetCoords();
+        }
+    };
+
     PathNodeFactoryInterface& m_PathNodeFactory;
 	std::map<Point, std::shared_ptr<PathNodeInterface>> m_Closed;
 	std::map<Point, std::shared_ptr<PathNodeInterface>> m_Open;
+    std::priority_queue<OpenNode, std::vector<OpenNode>, OpenNodeCompare> m_OpenQueue;
     const static uint8_t NEIGHBORS_COUNT = 3;
+    const static size_t MAX_VISITED_NODES = 250000;
 };

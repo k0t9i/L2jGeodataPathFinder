@@ -5,23 +5,27 @@
 #include "GeoData/DataHandler.h"
 #include "GeoData/LayerDecoratorFactory.h"
 #include "GeoData/Converter.h"
+#include <mutex>
 
 DataHandler handler;
+std::mutex handlerMutex;
 
 extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight)
 {
+    std::lock_guard<std::mutex> lock(handlerMutex);
     handler.SetDataDirectory(geoDataDir);
     LayerDecoratorFactory factory(handler, maxPassableHeight);
     Pathfinder pathfinder(factory);
 
     const auto path = pathfinder.FindPath(startX, startY, startZ, endX, endY);
-    *result = ConvertPath(path);
+    *result = path.empty() ? nullptr : ConvertPath(path);
 
     return path.size();
 }
 
 extern "C" L2JGEODATAPATHFINDER_API bool HasLineOfSight(const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight)
 {
+    std::lock_guard<std::mutex> lock(handlerMutex);
     handler.SetDataDirectory(geoDataDir);
     LayerDecoratorFactory factory(handler, maxPassableHeight);
     Pathfinder pathfinder(factory);
