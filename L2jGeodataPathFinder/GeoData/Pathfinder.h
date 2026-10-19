@@ -8,6 +8,7 @@
 #include "PathNodeFactoryInterface.h"
 #include "PathNodeInterface.h"
 #include "Point.h"
+#include "Constants.h"
 
 class Pathfinder
 {
@@ -15,18 +16,35 @@ public:
     Pathfinder(PathNodeFactoryInterface& pathNodeFactory) : m_PathNodeFactory(pathNodeFactory) {};
 	virtual ~Pathfinder() = default;
 
-    const std::vector<std::shared_ptr<PathNodeInterface>> FindPath(const float startX, const float startY, float startZ, const float endX, const float endY)
+    const std::vector<std::shared_ptr<PathNodeInterface>> FindPath(const float startX, const float startY, float startZ, const float endX, const float endY, float range)
     {
         const auto start = m_PathNodeFactory.CreateStartNode(startX, startY, startZ);
         const auto target = m_PathNodeFactory.CreateTargetNode(endX, endY, startZ);
+        const auto rangeInCells = std::max(0.0f, range) / Constants::CELL_SIZE_IN_GAME_COORDS;
 
         std::vector<std::shared_ptr<PathNodeInterface>> result;
 
-        if (LineOfSight(start, target)) {
+        if (IsWithinRange(start, target, rangeInCells))
+        {
             result.push_back(start);
-            result.push_back(target);
-
             return result;
+        }
+
+        const auto straightPath = GetStraightPath(start, target);
+
+        for (size_t i = 1; i < straightPath.size(); i++)
+        {
+            if (!straightPath[i - 1]->CanMoveTo(straightPath[i]))
+            {
+                break;
+            }
+
+            if (IsWithinRange(straightPath[i], target, rangeInCells))
+            {
+                result.push_back(start);
+                result.push_back(rangeInCells == 0.0f ? target : straightPath[i]);
+                return result;
+            }
         }
 
         m_Closed.clear();
@@ -36,7 +54,7 @@ public:
         m_Open[start->GetCoords()] = start;
 
         start->SetG(0);
-        start->SetH(GetHeuristicCost(start, target));
+        start->SetH(GetHeuristicCost(start, target, rangeInCells));
         m_OpenQueue.push({ start->GetF(), start });
 
         while (!m_OpenQueue.empty() && m_Closed.size() < MAX_VISITED_NODES)
@@ -51,9 +69,10 @@ public:
                 continue;
             }
 
-            if (current == target)
+            if (IsWithinRange(current, target, rangeInCells))
             {
-                auto currentNode = target;
+                auto currentNode = current;
+
                 while (currentNode != nullptr)
                 {
                     result.push_back(currentNode);
@@ -96,7 +115,7 @@ public:
                 {
                     node->SetParent(current);
                     node->SetG(newGScore);
-                    node->SetH(GetHeuristicCost(node, target));
+                    node->SetH(GetHeuristicCost(node, target, rangeInCells));
                     m_OpenQueue.push({ node->GetF(), node });
                 }
             }
@@ -105,20 +124,32 @@ public:
         return result;
     }
 
-    const bool LineOfSight(const float startX, const float startY, float startZ, const float endX, const float endY) const
+    const bool HasLineOfSight(const float startX, const float startY, float startZ, const float endX, const float endY, const float endZ) const
     {
         const auto start = m_PathNodeFactory.CreateStartNode(startX, startY, startZ);
-        const auto target = m_PathNodeFactory.CreateTargetNode(endX, endY, startZ);
+        const auto target = m_PathNodeFactory.CreateTargetNode(endX, endY, endZ);
 
-        return LineOfSight(start, target);
+        return CanMoveDirectly(start, target);
     }
 
 private:
-	const float GetHeuristicCost(std::shared_ptr<PathNodeInterface> current, std::shared_ptr<PathNodeInterface> target) const
-	{
-        const auto cost = std::abs((float)((int32_t)target->GetCoords().x - (int32_t)current->GetCoords().x)) + std::abs((float)((int32_t)target->GetCoords().y - (int32_t)current->GetCoords().y));
-        return 10 * cost;
-	}
+    const bool IsWithinRange(std::shared_ptr<PathNodeInterface> current, std::shared_ptr<PathNodeInterface> target, float rangeInCells) const
+    {
+        const auto dx = static_cast<float>(current->GetCoords().x - target->GetCoords().x);
+        const auto dy = static_cast<float>(current->GetCoords().y - target->GetCoords().y);
+
+        return dx * dx + dy * dy <= rangeInCells * rangeInCells;
+    }
+
+    const float GetHeuristicCost(std::shared_ptr<PathNodeInterface> current, std::shared_ptr<PathNodeInterface> target, float rangeInCells) const
+    {
+        const auto dx = static_cast<float>(current->GetCoords().x - target->GetCoords().x);
+        const auto dy = static_cast<float>(current->GetCoords().y - target->GetCoords().y);
+
+        const auto distance = std::sqrt(dx * dx + dy * dy);
+
+        return 10.0f * std::max(0.0f, distance - rangeInCells);
+    }
 
 	const std::vector<std::shared_ptr<PathNodeInterface>> GetNeighbors(const std::shared_ptr<PathNodeInterface> node, const uint8_t radius = 1) const
 	{
@@ -157,13 +188,13 @@ private:
         {
             const auto next = path[i];
 
-            if (LineOfSight(current, next)) {
+            if (CanMoveDirectly(current, next)) {
                 continue;
             }
             else
             {
-                current = next;
-                result.push_back(path[i - 1]);
+                current = path[i - 1];
+                result.push_back(current);
             }
         }
 
@@ -172,7 +203,7 @@ private:
         return result;
     }
 
-    const bool LineOfSight(std::shared_ptr<PathNodeInterface> start, std::shared_ptr<PathNodeInterface> end) const
+    const bool CanMoveDirectly(std::shared_ptr<PathNodeInterface> start, std::shared_ptr<PathNodeInterface> end) const
     {
         const auto& path = GetStraightPath(start, end);
 

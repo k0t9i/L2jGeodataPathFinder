@@ -10,27 +10,27 @@
 DataHandler handler;
 std::mutex handlerMutex;
 
-extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight)
+extern "C" L2JGEODATAPATHFINDER_API size_t FindPath(PathNode ** result, const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, float range, const uint16_t maxPassableHeight)
 {
     std::lock_guard<std::mutex> lock(handlerMutex);
     handler.SetDataDirectory(geoDataDir);
     LayerDecoratorFactory factory(handler, maxPassableHeight);
     Pathfinder pathfinder(factory);
 
-    const auto path = pathfinder.FindPath(startX, startY, startZ, endX, endY);
+    const auto path = pathfinder.FindPath(startX, startY, startZ, endX, endY, range);
     *result = path.empty() ? nullptr : ConvertPath(path);
 
     return path.size();
 }
 
-extern "C" L2JGEODATAPATHFINDER_API bool HasLineOfSight(const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const uint16_t maxPassableHeight)
+extern "C" L2JGEODATAPATHFINDER_API bool HasLineOfSight(const char* geoDataDir, const float startX, const float startY, const float startZ, const float endX, const float endY, const float endZ)
 {
     std::lock_guard<std::mutex> lock(handlerMutex);
     handler.SetDataDirectory(geoDataDir);
-    LayerDecoratorFactory factory(handler, maxPassableHeight);
+    LayerDecoratorFactory factory(handler, 9999);
     Pathfinder pathfinder(factory);
 
-    return pathfinder.LineOfSight(startX, startY, startZ, endX, endY);
+    return pathfinder.HasLineOfSight(startX, startY, startZ, endX, endY, endZ);
 }
 
 extern "C" L2JGEODATAPATHFINDER_API void ReleasePath(PathNode * path)
